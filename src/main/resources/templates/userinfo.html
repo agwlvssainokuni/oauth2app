@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OAuth2サンプルアプリ</title>
+</head>
+
+<body>
+    <header>
+        <header>
+            <form th:action="@{/logout}" method="POST">
+                <button>ログアウト</button>
+            </form>
+        </header>
+    </header>
+    <main>
+        <div>ユーザ情報</div>
+        <div>
+            <span>名前: </span>
+            <span th:text="${auth.name}"></span>
+        </div>
+        <div th:each="attr: ${auth.principal.attributes}">
+            <span th:text="${attr.key} + ':'"></span>
+            <span th:text="${attr.value}"></span>
+        </div>
+    </main>
+    <footer>
+        <address>Copyright &copy;, 2021, agwlvssainokuni</address>
+    </footer>
+</body>
+
+</html>
