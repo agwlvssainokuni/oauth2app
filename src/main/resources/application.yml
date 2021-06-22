@@ -1,0 +1,28 @@
+# LOG CONFIGURATION
+logging:
+    pattern:
+        console: "%d{yyyy-MM-dd-HH:mm:ss.SSS} [%-5level] %logger - %msg%n"
+    level:
+        root: WARN
+        cherry:
+            oauth2app: DEBUG
+        org:
+            springframework: INFO
+spring:
+    main:
+        banner-mode: off
+    security:
+        oauth2:
+            client:
+                registration:
+                    keycloak:
+                        client-id: oauth2app
+                        authorization-grant-type: authorization_code
+                        redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
+                provider:
+                    keycloak:
+                        authorization-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/auth
+                        token-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/token
+                        user-info-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/userinfo
+                        user-name-attribute: sub
+                        jwk-set-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/certs
