@@ -9,15 +9,13 @@
 
 <body>
     <header>
-        <form th:action="@{/logout}" method="POST" th:if="${auth != null && auth.isAuthenticated()}">
-            <button>ログアウト</button>
-        </form>
-        <form th:action="@{/oauth2/authorization/keycloak}" method="GET" th:unless="${auth != null && auth.isAuthenticated()}">
-            <button>ログイン</button>
-        </form>
+        <h1>OAuth2サンプルアプリ</h1>
     </header>
     <main>
-        <a th:href="@{/userinfo}">ユーザ情報</a>
+        <ul>
+            <li><a th:href="@{/onbrowser/}">ブラウザサイド</a></li>
+            <li><a th:href="@{/onserver/}">サーバサイド</a></li>
+        </ul>
     </main>
     <footer>
         <address>Copyright &copy;, 2021, agwlvssainokuni</address>

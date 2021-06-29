@@ -4,19 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OAuth2サンプルアプリ</title>
+    <title>OAuth2サンプルアプリ(サーバサイド)</title>
 </head>
 
 <body>
     <header>
-        <header>
-            <form th:action="@{/logout}" method="POST">
-                <button>ログアウト</button>
-            </form>
-        </header>
+        <h1>OAuth2サンプルアプリ(サーバサイド)</h1>
     </header>
     <main>
-        <div>ユーザ情報</div>
+        <form th:action="@{/logout}" method="POST">
+            <button>ログアウト</button>
+        </form>
+        <div>
+            <span>ユーザ情報</span>
+            <a th:href="@{/onserver/}">戻る</a>
+        </div>
         <div>
             <span>名前: </span>
             <span th:text="${auth.name}"></span>

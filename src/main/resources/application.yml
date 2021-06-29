@@ -13,6 +13,10 @@ spring:
         banner-mode: off
     security:
         oauth2:
+            resourceserver:
+                jwt:
+                    jwk-set-uri: http://localhost:9080/auth/realms/mydemo/protocol/openid-connect/certs
+                    issuer-uri: http://localhost:9080/auth/realms/mydemo
             client:
                 registration:
                     keycloak:
@@ -24,9 +28,9 @@ spring:
                         - openid
                 provider:
                     keycloak:
-                        authorization-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/auth
-                        token-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/token
-                        user-info-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/userinfo
+                        authorization-uri: http://localhost:9080/auth/realms/mydemo/protocol/openid-connect/auth
+                        token-uri: http://localhost:9080/auth/realms/mydemo/protocol/openid-connect/token
+                        user-info-uri: http://localhost:9080/auth/realms/mydemo/protocol/openid-connect/userinfo
                         user-name-attribute: sub
-                        jwk-set-uri: http://localhost:8180/auth/realms/demo/protocol/openid-connect/certs
-                        issuer-uri: http://localhost:8180/auth/realms/mydemo
+                        jwk-set-uri: http://localhost:9080/auth/realms/mydemo/protocol/openid-connect/certs
+                        issuer-uri: http://localhost:9080/auth/realms/mydemo

@@ -16,20 +16,41 @@
 
 package cherry.oauth2app.web;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller()
-@RequestMapping("/userinfo")
-public class UserinfoController {
+@RequestMapping("/onbrowser")
+public class OnbrowserController {
 
     @RequestMapping()
-    public ModelAndView userinfo(Authentication auth) {
-        ModelAndView mav = new ModelAndView("/userinfo");
+    public ModelAndView index(Authentication auth) {
+        ModelAndView mav = new ModelAndView("/onbrowser/index");
         mav.addObject("auth", auth);
         return mav;
+    }
+
+    @RequestMapping(value = "/myapi", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public Map<String, String> myapi(Authentication auth) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("username", auth.getName());
+        map.put("datetime", LocalDateTime.now().toString());
+        return map;
+    }
+
+    @RequestMapping("/blank")
+    @ResponseBody()
+    public String blank() {
+        return "";
     }
 
 }

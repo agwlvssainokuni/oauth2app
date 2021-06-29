@@ -33,24 +33,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http //
-                .oauth2Login() //
-                .and() //
-                .logout() //
-                .logoutUrl("/logout") //
-                .logoutSuccessHandler(oidcLogoutSuccessHandler()) //
-                .invalidateHttpSession(true) //
-                .clearAuthentication(true) //
-                .and() //
-                .authorizeRequests() //
-                .antMatchers("/userinfo").authenticated() //
-                .antMatchers("/exit").authenticated() //
-                .antMatchers("/**").permitAll();
+                .oauth2ResourceServer((oauth2) -> {
+                    oauth2.jwt();
+                }) //
+                .oauth2Login((oauth2) -> {
+                    oauth2.defaultSuccessUrl("/onserver/");
+                }) //
+                .logout((logout) -> {
+                    logout.logoutUrl("/logout");
+                    logout.logoutSuccessUrl("/onserver/");
+                    logout.logoutSuccessHandler(oidcLogoutSuccessHandler("/onserver/"));
+                    logout.invalidateHttpSession(true);
+                    logout.clearAuthentication(true);
+                }) //
+                .authorizeRequests((authz) -> {
+                    authz.antMatchers("/onbrowser/myapi").hasAuthority("SCOPE_openid");
+                    authz.antMatchers("/onserver/userinfo").authenticated();
+                    authz.antMatchers("/exit").authenticated();
+                    authz.antMatchers("/**").permitAll();
+                });
     }
 
-    private LogoutSuccessHandler oidcLogoutSuccessHandler() {
+    private LogoutSuccessHandler oidcLogoutSuccessHandler(String path) {
         OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(
                 clientRegistrationRepository);
-        handler.setPostLogoutRedirectUri("{baseUrl}");
+        handler.setPostLogoutRedirectUri("{baseUrl}" + path);
         return handler;
     }
 

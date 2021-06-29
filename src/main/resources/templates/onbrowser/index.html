@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OAuth2サンプルアプリ(ブラウザサイド)</title>
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>OAuth2サンプルアプリ(ブラウザサイド)</h1>
+    </header>
+    <main>
+        <div>
+            <button id="accessToken">アクセストークン</button>
+        </div>
+        <div>
+            <button id="myapi">リソースサーバAPI呼出し</button>
+        </div>
+    </main>
+    <footer>
+        <address>Copyright &copy;, 2021, agwlvssainokuni</address>
+    </footer>
+    <script type="text/javascript">
+        oauth2clnt = new msal.PublicClientApplication({
+            auth: {
+                clientId: "oauth2app",
+                authority: "http://localhost:9080/auth/realms/mydemo/",
+                knownAuthorities: ["localhost:9080"],
+                protocolMode: "OIDC"
+            }
+        });
+        document.querySelector("#accessToken").onclick = async (e) => {
+            tk = await oauth2clnt.acquireTokenPopup({
+                redirectUri: "http://localhost:8080/onbrowser/blank"
+            });
+            alert(tk.accessToken);
+        }
+        document.querySelector("#myapi").onclick = async (e) => {
+            tk = await oauth2clnt.acquireTokenPopup({
+                redirectUri: "http://localhost:8080/onbrowser/blank"
+            });
+            res = await fetch("http://localhost:8080/onbrowser/myapi", {
+                headers: {
+                    "Authorization": "Bearer " + tk.accessToken
+                }
+            });
+            alert(await res.text());
+        }
+    </script>
+</body>
+
+</html>
