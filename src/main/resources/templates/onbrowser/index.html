@@ -27,8 +27,8 @@
         oauth2clnt = new msal.PublicClientApplication({
             auth: {
                 clientId: "oauth2app",
-                authority: "http://localhost:9080/auth/realms/mydemo/",
-                knownAuthorities: ["localhost:9080"],
+                authority: "https://localhost:9443/auth/realms/mydemo/",
+                knownAuthorities: ["localhost:9443"],
                 protocolMode: "OIDC"
             }
         });
