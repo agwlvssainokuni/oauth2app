@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OAuth2サンプルアプリ(WEB)</title>
+</head>
+
+<body>
+    <header>
+        <h1>OAuth2サンプルアプリ(WEB)</h1>
+    </header>
+    <main>
+        <form th:action="@{/logout}" method="POST" th:if="${auth != null && auth.isAuthenticated()}">
+            <button>ログアウト</button>
+        </form>
+        <form th:action="@{/oauth2/authorization/keycloak}" method="GET"
+            th:unless="${auth != null && auth.isAuthenticated()}">
+            <button>ログイン</button>
+        </form>
+        <div>
+            <a th:href="@{/userinfo}">ユーザ情報</a>
+        </div>
+    </main>
+    <footer>
+        <address>Copyright &copy;, 2021, agwlvssainokuni</address>
+    </footer>
+</body>
+
+</html>

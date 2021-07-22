@@ -1,0 +1,15 @@
+# LOG CONFIGURATION
+logging:
+    pattern:
+        console: "%d{yyyy-MM-dd-HH:mm:ss.SSS} [%-5level] %logger - %msg%n"
+    level:
+        root: WARN
+        cherry:
+            oauth2app: DEBUG
+        org:
+            springframework: INFO
+server:
+    port: 8082
+spring:
+    main:
+        banner-mode: off

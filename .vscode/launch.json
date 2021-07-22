@@ -12,10 +12,24 @@
         },
         {
             "type": "java",
-            "name": "Launch Main",
+            "name": "Launch API",
             "request": "launch",
             "mainClass": "cherry.oauth2app.Main",
-            "projectName": "oauth2app"
+            "projectName": "api"
+        },
+        {
+            "type": "java",
+            "name": "Launch SPA",
+            "request": "launch",
+            "mainClass": "cherry.oauth2app.Main",
+            "projectName": "spa"
+        },
+        {
+            "type": "java",
+            "name": "Launch WEB",
+            "request": "launch",
+            "mainClass": "cherry.oauth2app.Main",
+            "projectName": "web"
         }
     ]
 }

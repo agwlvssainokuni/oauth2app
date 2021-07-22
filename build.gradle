@@ -1,33 +1,46 @@
 buildscript {
     ext {
-        versionSpringBoot = "2.5.1"
-        versionSpringSecurity = "5.5.1"
-        versionSpringDependencyManagement = "1.0.11.RELEASE"
+        versionSpringBoot = "2.5.2"
     }
+    repositories { mavenCentral() }
+    dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
 }
 
-plugins {
-    id "org.springframework.boot" version "${versionSpringBoot}"
-    id "io.spring.dependency-management" version "${versionSpringDependencyManagement}"
-    id "java-library"
-}
+subprojects {
 
-springBoot { mainClassName = "oauth2app.Main" }
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "java-library"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    springBoot { mainClassName = "cherry.oauth2app.Main" }
 
-compileJava.options.encoding = "UTF-8"
-compileTestJava.options.encoding = "UTF-8"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-repositories { mavenCentral() }
+    compileJava.options.encoding = "UTF-8"
+    compileTestJava.options.encoding = "UTF-8"
 
-dependencies {
-    implementation "org.springframework.boot:spring-boot-starter"
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    runtimeOnly "org.springframework.boot:spring-boot-starter-aop"
+    repositories { mavenCentral() }
+
+    dependencies {
+        if (project.name == "api") {
+            implementation "org.springframework.boot:spring-boot-starter"
+            implementation "org.springframework.boot:spring-boot-starter-web"
+            implementation "org.springframework.boot:spring-boot-starter-security"
+            implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+        }
+        if (project.name == "spa") {
+            implementation "org.springframework.boot:spring-boot-starter"
+            implementation "org.springframework.boot:spring-boot-starter-web"
+            implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+        }
+        if (project.name == "web") {
+            implementation "org.springframework.boot:spring-boot-starter"
+            implementation "org.springframework.boot:spring-boot-starter-web"
+            implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+            implementation "org.springframework.boot:spring-boot-starter-security"
+            implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+        }
+        runtimeOnly "org.springframework.boot:spring-boot-starter-aop"
+    }
 }
