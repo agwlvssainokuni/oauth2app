@@ -31,6 +31,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from "@azure/msal-react";
 import React from "react";
 import ReactDOM from "react-dom";
+import { uri } from "../javascript/resolver";
 
 var clientConfig = {
     auth: {
@@ -42,12 +43,12 @@ var clientConfig = {
 };
 
 var loginRequest = {
-    redirectUri: "http://localhost:8082/blank"
+    redirectUri: uri("/blank")
 };
 
 var logoutRequest = {
-    // mainWindowRedirectUri: "http://localhost:8082/",
-    postLogoutRedirectUri: "http://localhost:8082/blank"
+    // mainWindowRedirectUri: uri("/"),
+    postLogoutRedirectUri: uri("/blank")
 };
 
 var publicClientApplication = new PublicClientApplication(clientConfig);

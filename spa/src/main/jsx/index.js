@@ -19,23 +19,24 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from "@azure/msal-react";
 import React from "react";
 import ReactDOM from "react-dom";
+import { uri } from "../javascript/resolver";
 
 const clientConfig = {
     auth: {
         clientId: "oauth2app-spa",
         authority: "https://localhost:8443/auth/realms/mydemo/",
         knownAuthorities: ["localhost:8443"],
-        protocolMode: "OIDC"
+        protocolMode: "OIDC",
     }
 };
 
 const loginRequest = {
-    redirectUri: "http://localhost:8082/blank"
+    redirectUri: uri("/blank"),
 };
 
 const logoutRequest = {
-    // mainWindowRedirectUri: "http://localhost:8082/",
-    postLogoutRedirectUri: "http://localhost:8082/blank"
+    // mainWindowRedirectUri: uri("/"),
+    postLogoutRedirectUri: uri("/blank"),
 };
 
 const publicClientApplication = new PublicClientApplication(clientConfig);
@@ -65,10 +66,10 @@ class App extends React.Component {
         let response = account ?
             await publicClientApplication.acquireTokenSilent({
                 ...loginRequest,
-                account: account
+                account: account,
             }) :
             await publicClientApplication.acquireTokenPopup({
-                ...loginRequest
+                ...loginRequest,
             });
         let accessToken = response.accessToken;
         this.myapi(accessToken);
@@ -78,7 +79,7 @@ class App extends React.Component {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + accessToken);
         let response = await fetch("http://localhost:8081/myapi", {
-            headers: headers
+            headers: headers,
         });
         let json = await response.json();
         this.setState({
