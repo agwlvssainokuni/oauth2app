@@ -17,7 +17,7 @@
 
 import { PublicClientApplication } from "@azure/msal-browser";
 import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from "@azure/msal-react";
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { uri } from "../javascript/resolver";
 
@@ -41,108 +41,82 @@ const logoutRequest = {
 
 const publicClientApplication = new PublicClientApplication(clientConfig);
 
-class App extends React.Component {
+const login = () => {
+    publicClientApplication.loginPopup(loginRequest);
+}
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: null,
-        };
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
-        this.handleApiCall = this.handleApiCall.bind(this);
-    }
+const logout = () => {
+    publicClientApplication.logoutPopup(logoutRequest);
+}
 
-    handleLogin(event) {
-        publicClientApplication.loginPopup(loginRequest);
-    }
+const acquireToken = async () => {
+    const account = publicClientApplication.getAllAccounts()[0];
+    let response = account ?
+        await publicClientApplication.acquireTokenSilent({
+            ...loginRequest,
+            account: account,
+        }) :
+        await publicClientApplication.acquireTokenPopup({
+            ...loginRequest,
+        });
+    return response.accessToken;
+}
 
-    handleLogout(event) {
-        publicClientApplication.logoutPopup(logoutRequest);
-    }
+function App(props) {
+    let [data, setData] = useState(null);
 
-    async handleApiCall(event) {
-        const account = publicClientApplication.getAllAccounts()[0];
-        let response = account ?
-            await publicClientApplication.acquireTokenSilent({
-                ...loginRequest,
-                account: account,
-            }) :
-            await publicClientApplication.acquireTokenPopup({
-                ...loginRequest,
-            });
-        let accessToken = response.accessToken;
-        this.myapi(accessToken);
-    }
+    const myapi = async () => {
+        const accessToken = await acquireToken();
 
-    async myapi(accessToken) {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + accessToken);
         let response = await fetch("http://localhost:8081/myapi", {
             headers: headers,
         });
         let json = await response.json();
-        this.setState({
-            data: json,
-        });
+
+        setData(json);
     }
 
-    render() {
-        return (<React.Fragment>
-            <div>
-                <UnauthenticatedTemplate>
-                    <button onClick={this.handleLogin}>ログイン</button>
-                </UnauthenticatedTemplate>
-                <AuthenticatedTemplate>
-                    <button onClick={this.handleLogout}>ログアウト</button>
-                </AuthenticatedTemplate>
-            </div>
-            <div>
-                <button onClick={this.handleApiCall}>トークン情報</button>
-            </div>
-            {this.renderStateData()}
-        </React.Fragment>);
-    }
-
-    renderStateData() {
-        if (!this.state.data) {
+    const renderData = () => {
+        if (!data) {
             return <React.Fragment />;
         }
         return (<React.Fragment>
             <div>
                 <span>名前: </span>
-                <span>{this.state.data.name}</span>
+                <span>{data.name}</span>
             </div>
             <div>
                 <span>issuedAt: </span>
-                <span>{this.state.data.issuedAt}</span>
+                <span>{data.issuedAt}</span>
             </div>
             <div>
                 <span>expiresAt: </span>
-                <span>{this.state.data.expiresAt}</span>
+                <span>{data.expiresAt}</span>
             </div>
             <div>ヘッダ</div>
             {
-                Object.keys(this.state.data.headers).map((k) =>
+                Object.keys(data.headers).map((k) =>
                     <div>
                         <span>{k}: </span>
-                        <span>{this.valueToString(this.state.data.headers[k])}</span>
+                        <span>{valueToString(data.headers[k])}</span>
                     </div>
                 )
             }
             <div>クレーム</div>
             {
-                Object.keys(this.state.data.claims).map((k) =>
+                Object.keys(data.claims).map((k) =>
                     <div>
                         <span>{k}: </span>
-                        <span>{this.valueToString(this.state.data.claims[k])}</span>
+                        <span>{valueToString(data.claims[k])}</span>
                     </div>
                 )
             }
         </React.Fragment>);
     }
 
-    valueToString(value) {
+    const valueToString = (value) => {
         if (value instanceof String) {
             return value;
         }
@@ -150,13 +124,28 @@ class App extends React.Component {
             return value.toString();
         }
         if (value instanceof Array) {
-            return "[" + value.map((e) => this.valueToString(e)).join(", ") + "]";
+            return "[" + value.map((e) => valueToString(e)).join(", ") + "]";
         }
         if (value instanceof Object) {
-            return "{" + Object.keys(value).map((k) => k.toString() + ": " + this.valueToString(value[k])).join(", ") + "}";
+            return "{" + Object.keys(value).map((k) => k.toString() + ": " + valueToString(value[k])).join(", ") + "}";
         }
         return value.toString();
     }
+
+    return (<React.Fragment>
+        <div>
+            <UnauthenticatedTemplate>
+                <button onClick={(e) => login()}>ログイン</button>
+            </UnauthenticatedTemplate>
+            <AuthenticatedTemplate>
+                <button onClick={(e) => logout()}>ログアウト</button>
+            </AuthenticatedTemplate>
+        </div>
+        <div>
+            <button onClick={(e) => myapi()}>トークン情報</button>
+        </div>
+        {renderData()}
+    </React.Fragment>);
 }
 
 window.onload = () => {
