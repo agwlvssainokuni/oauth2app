@@ -1,13 +1,6 @@
-buildscript {
-    ext {
-        versionDependencyManagement = "1.0.11.RELEASE"
-        versionSpringBoot = "2.5.5"
-    }
-    repositories { mavenCentral() }
-    dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:${versionDependencyManagement}"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}"
-    }
+plugins {
+    id "io.spring.dependency-management" version "1.0.11.RELEASE" apply false
+    id "org.springframework.boot" version "2.5.5" apply false
 }
 
 subprojects {
@@ -25,6 +18,10 @@ subprojects {
     compileTestJava.options.encoding = "UTF-8"
 
     repositories { mavenCentral() }
+
+	dependencyManagement {
+		imports { mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.5" }
+    }
 
     dependencies {
         if (project.name == "api") {
