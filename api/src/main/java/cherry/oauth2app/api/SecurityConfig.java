@@ -19,6 +19,7 @@ package cherry.oauth2app.api;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -43,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     authz.antMatchers("/myapi").hasAuthority("SCOPE_openid");
                     authz.antMatchers("/**").permitAll();
                 });
+        http //
+                .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);
     }
 
 }

@@ -1,16 +1,20 @@
 buildscript {
     ext {
+        versionDependencyManagement = "1.0.11.RELEASE"
         versionSpringBoot = "2.5.5"
     }
     repositories { mavenCentral() }
-    dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:${versionDependencyManagement}"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}"
+    }
 }
 
 subprojects {
 
-    apply plugin: "org.springframework.boot"
-    apply plugin: "io.spring.dependency-management"
     apply plugin: "java-library"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
 
     springBoot { mainClassName = "cherry.oauth2app.Main" }
 

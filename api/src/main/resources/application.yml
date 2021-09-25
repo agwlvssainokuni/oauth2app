@@ -1,7 +1,7 @@
 # LOG CONFIGURATION
 logging:
     pattern:
-        console: "%d{yyyy-MM-dd-HH:mm:ss.SSS} [%-5level] %logger - %msg%n"
+        console: "%d{yyyy-MM-dd-HH:mm:ss.SSS} [%-5level] [%X{loginId}] [%t] %logger - %msg%n"
     level:
         root: WARN
         cherry:

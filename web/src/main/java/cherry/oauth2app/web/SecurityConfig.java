@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -47,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     authz.antMatchers("/userinfo").authenticated();
                     authz.antMatchers("/**").permitAll();
                 });
+        http //
+                .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);
     }
 
     private LogoutSuccessHandler oidcLogoutSuccessHandler(String path) {
