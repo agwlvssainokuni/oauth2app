@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 export { uri };
+
 /**
  * HTMLに埋め込んだコンテキストパスに基づきURI(パス)を解決する。
  * HTMLへの埋め込みは以下の要領。
  *   <meta name="context-root" th:content="@{/}" />
  */
-
-const uri = (r => {
-  let root = r ? r.getAttribute("content") : "";
-
-  if (root.endsWith("/")) {
-    root = root.substring(0, root.length - 1);
-  }
-
-  return path => root + path;
+const uri = ((r) => {
+	let root = r ? r.getAttribute("content") : ""
+	if (root.endsWith("/")) {
+		root = root.substring(0, root.length - 1);
+	}
+	return (path) => root + path;
 })(document.querySelector("meta[name='context-root']"));

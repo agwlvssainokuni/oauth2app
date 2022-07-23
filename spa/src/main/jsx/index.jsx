@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 agwlvssainokuni
+ * Copyright 2021,2022 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from "@azure/msal-react";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { uri } from "../javascript/resolver";
+import { uri } from "./resolver";
 
 const clientConfig = {
     auth: {

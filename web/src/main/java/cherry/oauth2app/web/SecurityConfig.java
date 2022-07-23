@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 agwlvssainokuni
+ * Copyright 2021,2022 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,44 @@
 
 package cherry.oauth2app.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+            ClientRegistrationRepository repository) throws Exception {
         http //
-                .oauth2Login((oauth2) -> {
+                .oauth2Login(oauth2 -> {
                     oauth2.defaultSuccessUrl("/");
                 }) //
-                .logout((logout) -> {
+                .logout(logout -> {
                     logout.logoutUrl("/logout");
                     logout.logoutSuccessUrl("/");
-                    logout.logoutSuccessHandler(oidcLogoutSuccessHandler("/"));
+                    logout.logoutSuccessHandler(oidcLogoutSuccessHandler("/", repository));
                     logout.invalidateHttpSession(true);
                     logout.clearAuthentication(true);
                 }) //
-                .authorizeRequests((authz) -> {
+                .authorizeHttpRequests(authz -> {
                     authz.antMatchers("/userinfo").authenticated();
                     authz.antMatchers("/**").permitAll();
                 });
         http //
                 .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);
+        return http.build();
     }
 
-    private LogoutSuccessHandler oidcLogoutSuccessHandler(String path) {
-        OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(
-                clientRegistrationRepository);
+    private LogoutSuccessHandler oidcLogoutSuccessHandler(String path,
+            ClientRegistrationRepository repository) {
+        OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(repository);
         handler.setPostLogoutRedirectUri("{baseUrl}" + path);
         return handler;
     }

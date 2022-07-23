@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 agwlvssainokuni
+ * Copyright 2021,2022 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,19 @@
 
 package cherry.oauth2app.api;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http //
                 .cors(cors -> {
                     CorsConfiguration myapi = new CorsConfiguration();
@@ -37,15 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     source.registerCorsConfiguration("/myapi", myapi);
                     cors.configurationSource(source);
                 }) //
-                .oauth2ResourceServer((oauth2) -> {
+                .oauth2ResourceServer(oauth2 -> {
                     oauth2.jwt();
                 }) //
-                .authorizeRequests((authz) -> {
+                .authorizeHttpRequests(authz -> {
                     authz.antMatchers("/myapi").hasAuthority("SCOPE_openid");
                     authz.antMatchers("/**").permitAll();
                 });
         http //
                 .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);
+        return http.build();
     }
 
 }
