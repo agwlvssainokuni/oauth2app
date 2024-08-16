@@ -39,11 +39,11 @@ public class SecurityConfig {
                     cors.configurationSource(source);
                 }) //
                 .oauth2ResourceServer(oauth2 -> {
-                    oauth2.jwt();
+                    oauth2.jwt(jwt -> {});
                 }) //
                 .authorizeHttpRequests(authz -> {
-                    authz.antMatchers("/myapi").hasAuthority("SCOPE_openid");
-                    authz.antMatchers("/**").permitAll();
+                    authz.requestMatchers("/myapi").hasAuthority("SCOPE_openid");
+                    authz.anyRequest().permitAll();
                 });
         http //
                 .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);

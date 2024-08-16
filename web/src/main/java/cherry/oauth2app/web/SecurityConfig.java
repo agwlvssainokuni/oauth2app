@@ -43,8 +43,8 @@ public class SecurityConfig {
                     logout.clearAuthentication(true);
                 }) //
                 .authorizeHttpRequests(authz -> {
-                    authz.antMatchers("/userinfo").authenticated();
-                    authz.antMatchers("/**").permitAll();
+                    authz.requestMatchers("/userinfo").authenticated();
+                    authz.anyRequest().permitAll();
                 });
         http //
                 .addFilterAfter(new MDCLoginIdInsertingFilter(), SwitchUserFilter.class);
